@@ -1,0 +1,18 @@
+{
+    "name": "studio.nekomimi.onewaycollider.editor",
+    "references": [
+        "GUID:bf66b6e13c8a9c44eb5be2b57425442d",
+        "GUID:99835874ee819da44948776e0df4ff1d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
