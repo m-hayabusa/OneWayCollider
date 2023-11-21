@@ -19,8 +19,8 @@
 
             _mainCollider.enabled = false;
 
-            _colliderOffset = _mainCollider.center.y * transform.localScale.y;
-            _colliderSize = _mainCollider.size.y * transform.localScale.y / 2;
+            _colliderOffset = _mainCollider.center.y * transform.lossyScale.y;
+            _colliderSize = _mainCollider.size.y * transform.lossyScale.y / 2;
         }
         protected void SetMainCollider(BoxCollider collider) { _mainCollider = collider; }
         public static void EnsureColliderSize(OneWayCollider target)
@@ -48,13 +48,13 @@
                 return;
             }
             target.SetMainCollider(collider);
-            if (target.transform.localScale.x == 0 || target.transform.localScale.y == 0 || target.transform.localScale.z == 0)
+            if (target.transform.lossyScale.x == 0 || target.transform.lossyScale.y == 0 || target.transform.lossyScale.z == 0)
                 return;
 
             trigger.size = new Vector3(
-                collider.size.x + target.triggerSize.x / Mathf.Abs(target.transform.localScale.x),
-                collider.size.y + target.triggerSize.y / Mathf.Abs(target.transform.localScale.y),
-                collider.size.z + target.triggerSize.z / Mathf.Abs(target.transform.localScale.z)
+                collider.size.x + target.triggerSize.x / Mathf.Abs(target.transform.lossyScale.x),
+                collider.size.y + target.triggerSize.y / Mathf.Abs(target.transform.lossyScale.y),
+                collider.size.z + target.triggerSize.z / Mathf.Abs(target.transform.lossyScale.z)
             );
             trigger.center = new Vector3(collider.center.x, collider.center.y + trigger.size.y / 2, collider.center.z);
         }
