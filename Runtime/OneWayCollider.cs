@@ -70,16 +70,35 @@
         private void CheckPlayerOnCollider(VRCPlayerApi player)
         {
             if (!player.isLocal || _mainCollider.enabled) return;
-            if (player.GetPosition().y >= transform.position.y + _colliderOffset + _colliderSize && player.GetVelocity().y <= 0)
+            if (CheckState(player, true))
             {
                 _mainCollider.enabled = true;
                 Debug.Log(Time.frameCount + " " + name + " On");
             }
         }
+        private bool CheckState(VRCPlayerApi player, bool enable)
+        {
+            var pos = transform.position.y + _colliderOffset;
+            pos += enable ? _colliderSize : -_colliderSize;
+            if (transform.lossyScale.y > 0 && transform.up.y > 0 || (transform.lossyScale.y < 0 && transform.up.y < 0))
+            {
+                if (enable)
+                    return player.GetPosition().y >= pos && player.GetVelocity().y <= 0.1;
+                else
+                    return player.GetPosition().y < pos;
+            }
+            else
+            {
+                if (enable)
+                    return player.GetPosition().y <= pos && player.GetVelocity().y >= -0.1;
+                else
+                    return player.GetPosition().y > pos;
+            }
+        }
         public void Update()
         {
             if (!_mainCollider.enabled) return;
-            if (_localPlayer.GetPosition().y < transform.position.y + _colliderOffset - _colliderSize)
+            if (CheckState(_localPlayer, false))
             {
                 _mainCollider.enabled = false;
                 Debug.Log(Time.frameCount + " " + name + " Off");
