@@ -21,6 +21,12 @@ public class OneWayCollider : UdonSharpBehaviour
             else
                 trigger = c;
         }
+        if (trigger == null)
+        {
+            Debug.LogWarning($"{name}: TriggerつきのBoxColliderがアタッチされていない");
+            enabled = false;
+            return;
+        }
         trigger.size = new Vector3(_mainCollider.size.x * 1.5f, _mainCollider.size.y * 4f, _mainCollider.size.z * 1.5f);
         trigger.center = new Vector3(_mainCollider.center.x, _mainCollider.center.y + trigger.size.y / 2 - 0.1f, _mainCollider.center.z);
         _mainCollider.enabled = false;
