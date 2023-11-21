@@ -8,6 +8,7 @@
     {
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             var that = target as OneWayCollider;
             var colliders = that.GetComponents<BoxCollider>();
             BoxCollider trigger = null;
