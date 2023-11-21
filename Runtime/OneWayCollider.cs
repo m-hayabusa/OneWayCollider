@@ -4,6 +4,7 @@
     using UnityEngine;
     using VRC.SDKBase;
 
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class OneWayCollider : UdonSharpBehaviour
     {
         public Vector3 triggerSize = new Vector3(0.5f, 0.5f, 0.5f);
