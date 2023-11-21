@@ -29,7 +29,9 @@ public class OneWayCollider : UdonSharpBehaviour
         }
         trigger.size = new Vector3(_mainCollider.size.x * 1.5f, _mainCollider.size.y * 4f, _mainCollider.size.z * 1.5f);
         trigger.center = new Vector3(_mainCollider.center.x, _mainCollider.center.y + trigger.size.y / 2 - 0.1f, _mainCollider.center.z);
+
         _mainCollider.enabled = false;
+
         _colliderOffset = _mainCollider.center.y * transform.localScale.y;
         _colliderSize = _mainCollider.size.y * transform.localScale.y / 2;
     }
@@ -37,16 +39,16 @@ public class OneWayCollider : UdonSharpBehaviour
     {
         Debug.Log(Time.frameCount + " " + name + " Enter");
         GetComponent<MeshRenderer>().material.color = Color.yellow;
-        Check(player);
+        CheckPlayerOnCollider(player);
     }
     public override void OnPlayerTriggerStay(VRCPlayerApi player)
     {
-        Check(player);
+        CheckPlayerOnCollider(player);
     }
-    private void Check(VRCPlayerApi player)
+    private void CheckPlayerOnCollider(VRCPlayerApi player)
     {
         if (!player.isLocal || _mainCollider.enabled) return;
-        if (player.GetPosition().y >= transform.position.y + _colliderOffset + _colliderSize && _localPlayer.GetVelocity().y <= 0)
+        if (player.GetPosition().y >= transform.position.y + _colliderOffset + _colliderSize && player.GetVelocity().y <= 0)
         {
             GetComponent<MeshRenderer>().material.color = Color.blue;
             _mainCollider.enabled = true;
