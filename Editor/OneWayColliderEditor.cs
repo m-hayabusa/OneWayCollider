@@ -1,11 +1,61 @@
 ﻿namespace nekomimiStudio.oneWayCollider
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using UnityEditor;
     using UnityEngine;
 
-    [CustomEditor(typeof(OneWayCollider))]
-    internal class OneWayColliderEditor : Editor
+    [InitializeOnLoad]
+    internal static class OneWayColliderScaleChecker
     {
+        static OneWayColliderScaleChecker()
+        {
+            EditorApplication.hierarchyChanged += OnHierarchyChanged;
+            Undo.postprocessModifications += PostprocessModifications;
+        }
+
+        private static IEnumerable<Object> s_target = null;
+        private static readonly List<Transform> s_transforms = new List<Transform>();
+        private static void OnScaleChanged()
+        {
+            if (s_target != null)
+            {
+                foreach (var t in s_target)
+                {
+                    OneWayCollider.EnsureColliderSize((OneWayCollider)t);
+                }
+            }
+        }
+        private static UndoPropertyModification[] PostprocessModifications(UndoPropertyModification[] modifications)
+        {
+            foreach (var mod in modifications)
+            {
+                var target = mod.currentValue.target;
+                if (target.GetType() == typeof(Transform) && s_transforms.Contains(target) && mod.currentValue.propertyPath.StartsWith("m_LocalScale"))
+                    OnScaleChanged();
+            }
+            return modifications;
+        }
+        private static void OnHierarchyChanged()
+        {
+            s_target = Resources.FindObjectsOfTypeAll(typeof(OneWayCollider))
+                .Where(obj => (obj.hideFlags & HideFlags.HideInHierarchy) != HideFlags.HideInHierarchy);
+            s_transforms.Clear();
+            foreach (var target in s_target)
+            {
+                var t = ((OneWayCollider)target).transform;
+                while (t != null)
+                {
+                    s_transforms.Add(t.parent);
+                    t = t.parent;
+                }
+            }
+        }
+    }
+    public class OneWayColliderEditor : Editor
+    {
+        [CanEditMultipleObjects]
+        [CustomEditor(typeof(OneWayCollider))]
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -29,8 +79,6 @@
             {
                 that.gameObject.AddComponent<BoxCollider>();
             }
-
-            OneWayCollider.EnsureColliderSize(that);
         }
 
         [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected, typeof(OneWayCollider))]

@@ -85,5 +85,9 @@
                 Debug.Log(Time.frameCount + " " + name + " Off");
             }
         }
+        public void OnValidate()
+        {
+            EnsureColliderSize(this);
+        }
     }
 }
